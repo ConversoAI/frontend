@@ -63,7 +63,7 @@ export const login = async (email, password, isGoogleLogin = false) => {
  */
 export const register = async (userData) => {
   try {
-    const response = await fetch(`${API_BASE_URL}/auth/signup`, {
+    const response = await fetch(`${API_BASE_URL}/auth/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
