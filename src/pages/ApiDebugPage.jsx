@@ -38,7 +38,7 @@ export default function ApiDebugPage() {
       name: "Forgot Password",
       url: "https://dev.app.conversoaistudio.com/api/auth/forgot-password",
       payload: {
-        email: "test@example.com",
+        email: "saifkhan914533@gmail.com",
       },
     },
     "contact-us": {
@@ -55,8 +55,8 @@ export default function ApiDebugPage() {
       name: "Update Password",
       url: "https://dev.app.conversoaistudio.com/api/auth/update-password",
       payload: {
-        email: "test@example.com",
-        current_password: "OldPass@123",
+        email: "saifkhan914533@gmail.com",
+        current_password: "Test@123",
         new_password: "NewPass@123",
         confirm_new_password: "NewPass@123",
       },
