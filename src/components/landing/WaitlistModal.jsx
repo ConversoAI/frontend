@@ -8,6 +8,8 @@ function WaitlistModal() {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [responseMessage, setResponseMessage] = useState("");
+  const [alreadyRegistered, setAlreadyRegistered] = useState(false);
   const [error, setError] = useState("");
 
   const handleChange = (e) => {
@@ -23,6 +25,8 @@ function WaitlistModal() {
     e.preventDefault();
     setIsSubmitting(true);
     setError("");
+    setAlreadyRegistered(false);
+    setResponseMessage("");
 
     try {
       // Make actual API call to the waitlist endpoint
@@ -37,27 +41,42 @@ function WaitlistModal() {
         },
       );
 
+      const responseData = await response.json();
+      console.log("Waitlist API response:", responseData);
+
       if (!response.ok) {
-        // Handle HTTP errors
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.message || `Error: ${response.status}`);
+        throw new Error(responseData.message || `Error: ${response.status}`);
       }
 
-      const data = await response.json();
-      console.log("Waitlist submission successful:", data);
+      // Check if user is already registered
+      if (responseData.already_registered) {
+        setAlreadyRegistered(true);
+        setResponseMessage(
+          responseData.message || "Email already registered for the waitlist",
+        );
+      } else {
+        setResponseMessage(
+          responseData.message ||
+            "You've been added to our waitlist. We'll notify you when we launch.",
+        );
+      }
 
       // Show success state
       setIsSubmitted(true);
 
-      // Auto-close after delay
-      setTimeout(() => {
-        document.getElementById("waitlist_modal").close();
-        // Reset form and state after modal closes
+      // Auto-close after delay, only if not already registered
+      if (!responseData.already_registered) {
         setTimeout(() => {
-          setFormData({ first_name: "", last_name: "", email: "" });
-          setIsSubmitted(false);
-        }, 300);
-      }, 3000);
+          document.getElementById("waitlist_modal").close();
+          // Reset form and state after modal closes
+          setTimeout(() => {
+            setFormData({ first_name: "", last_name: "", email: "" });
+            setIsSubmitted(false);
+            setResponseMessage("");
+            setAlreadyRegistered(false);
+          }, 300);
+        }, 3000);
+      }
     } catch (err) {
       console.error("Waitlist submission error:", err);
       setError(err.message || "An error occurred. Please try again.");
@@ -72,6 +91,8 @@ function WaitlistModal() {
     setTimeout(() => {
       setFormData({ first_name: "", last_name: "", email: "" });
       setIsSubmitted(false);
+      setResponseMessage("");
+      setAlreadyRegistered(false);
       setError("");
     }, 300);
   };
@@ -167,26 +188,42 @@ function WaitlistModal() {
         ) : (
           <div className="py-8 text-center">
             <div className="flex justify-center mb-4">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-16 w-16 text-success"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M5 13l4 4L19 7"
-                />
-              </svg>
+              {alreadyRegistered ? (
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-16 w-16 text-info"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+              ) : (
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-16 w-16 text-success"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M5 13l4 4L19 7"
+                  />
+                </svg>
+              )}
             </div>
-            <h3 className="font-bold text-lg mb-2">Thank You!</h3>
-            <p className="mb-6">
-              You've been added to our waitlist. We'll notify you when we
-              launch.
-            </p>
+            <h3 className="font-bold text-lg mb-2">
+              {alreadyRegistered ? "Already Registered" : "Thank You!"}
+            </h3>
+            <p className="mb-6">{responseMessage}</p>
             <button className="btn btn-primary" onClick={closeModal}>
               Close
             </button>

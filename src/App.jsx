@@ -9,7 +9,7 @@ import ForgotPassword from "./pages/landing/ForgotPassword";
 import NotFound from "./pages/landing/NotFound";
 import Terms from "./pages/landing/Terms";
 import Privacy from "./pages/landing/Privacy";
-import ApiDebug from "./pages/ApiDebug";
+import ApiDebugPage from "./pages/ApiDebugPage";
 
 // Dashboard Pages
 import Dashboard from "./pages/dashboard/Dashboard";
@@ -38,7 +38,7 @@ function App() {
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/terms" element={<Terms />} />
           <Route path="/privacy" element={<Privacy />} />
-          <Route path="/test" element={<ApiDebug />} />
+          <Route path="/test" element={<ApiDebugPage />} />
 
           {/* Dashboard Pages */}
           <Route
