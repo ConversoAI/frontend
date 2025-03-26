@@ -65,7 +65,7 @@ export default function ApiDebugPage() {
       name: "Signup",
       url: "https://dev.app.conversoaistudio.com/api/auth/login",
       payload: {
-        email: "test@example.com",
+        email: "saifkhan914533@gmail.com",
         password: "Test@123",
         first_name: "Test",
         last_name: "User",
