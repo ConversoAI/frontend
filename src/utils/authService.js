@@ -9,7 +9,12 @@ const API_BASE_URL = "https://dev.app.conversoaistudio.com/api";
  * @param {boolean} isGoogleLogin - Whether this is a Google login
  * @returns {Promise} - Resolves with user data or rejects with error
  */
-export const login = async (email, password, isGoogleLogin = false) => {
+export const login = async (
+  email,
+  password,
+  rememberMe = false,
+  isGoogleLogin = false,
+) => {
   try {
     const response = await fetch(`${API_BASE_URL}/auth/login`, {
       method: "POST",
@@ -42,7 +47,14 @@ export const login = async (email, password, isGoogleLogin = false) => {
 
     // Store token and user data in localStorage
     if (data.access_token) {
-      localStorage.setItem("token", data.access_token);
+      const userData = { ...data };
+      delete userData.access_token;
+      delete userData.token_type;
+      delete userData.expires_in;
+
+      const storage = rememberMe ? localStorage : sessionStorage;
+      storage.setItem("token", data.access_token);
+      storage.setItem("user", JSON.stringify(userData));
     }
 
     // Store user data (excluding token fields)
@@ -50,8 +62,6 @@ export const login = async (email, password, isGoogleLogin = false) => {
     delete userData.access_token;
     delete userData.token_type;
     delete userData.expires_in;
-
-    localStorage.setItem("user", JSON.stringify(userData));
 
     return data;
   } catch (error) {
@@ -235,27 +245,21 @@ export const joinWaitlist = async (waitlistData) => {
   }
 };
 
-/**
- * Logs out the user by removing token and user data from storage
- */
 export const logout = () => {
   localStorage.removeItem("token");
   localStorage.removeItem("user");
+  sessionStorage.removeItem("token");
+  sessionStorage.removeItem("user");
 };
-
-/**
- * Checks if user is authenticated
- * @returns {boolean} - True if authenticated, false otherwise
- */
 export const isAuthenticated = () => {
-  return localStorage.getItem("token") !== null;
+  return (
+    localStorage.getItem("token") !== null ||
+    sessionStorage.getItem("token") !== null
+  );
 };
 
-/**
- * Gets the current user data from storage
- * @returns {object|null} - User data or null if not logged in
- */
 export const getCurrentUser = () => {
-  const userStr = localStorage.getItem("user");
+  const userStr =
+    localStorage.getItem("user") || sessionStorage.getItem("user");
   return userStr ? JSON.parse(userStr) : null;
 };

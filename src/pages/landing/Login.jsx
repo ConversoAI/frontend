@@ -17,6 +17,7 @@ export default function Login() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [notification, setNotification] = useState("");
+  const [rememberMe, setRememberMe] = useState(false);
 
   // Check for notification from redirect (e.g., after successful signup)
   useEffect(() => {
@@ -44,7 +45,7 @@ export default function Login() {
 
     try {
       // Call login API via auth context
-      await login(formData.email, formData.password);
+      await login(formData.email, formData.password, rememberMe);
       navigate("/dashboard");
     } catch (err) {
       setError(err.message || "An error occurred. Please try again.");
@@ -55,10 +56,6 @@ export default function Login() {
 
   const handleGoogleLogin = () => {
     setError("Google login is not yet implemented");
-  };
-
-  const openWaitlistModal = () => {
-    document.getElementById("waitlist_modal").showModal();
   };
 
   return (
@@ -161,7 +158,10 @@ export default function Login() {
                     name="remember-me"
                     type="checkbox"
                     className="checkbox checkbox-primary"
+                    checked={rememberMe}
+                    onChange={(e) => setRememberMe(e.target.checked)}
                   />
+
                   <label
                     htmlFor="remember-me"
                     className="ml-2 block text-sm text-gray-900"

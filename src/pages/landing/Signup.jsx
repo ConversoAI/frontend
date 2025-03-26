@@ -106,7 +106,7 @@ export default function Signup() {
     try {
       // Call the register function from authService
       const data = await register(formData);
-      console.log("Registration successful:", data);
+      // console.log("Registration successful:", data);
 
       // Check if the response contains verification message
       const message =
