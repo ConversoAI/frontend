@@ -63,7 +63,7 @@ export default function ApiDebugPage() {
     },
     signup: {
       name: "Signup",
-      url: "https://dev.app.conversoaistudio.com/api/auth/signup",
+      url: "https://dev.app.conversoaistudio.com/api/auth/login",
       payload: {
         email: "test@example.com",
         password: "Test@123",
