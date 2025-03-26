@@ -24,7 +24,7 @@ export const login = async (email, password, isGoogleLogin = false) => {
     });
 
     const data = await response.json();
-    console.log("Login response:", data);
+    // console.log("Login response:", data);
 
     // Handle error responses
     if (!response.ok) {
@@ -33,21 +33,25 @@ export const login = async (email, password, isGoogleLogin = false) => {
       );
     }
 
-    // Check if login was successful
-    if (!data.success) {
+    // The API doesn't return a success field, but instead returns an access_token when successful
+    if (!data.access_token) {
       throw new Error(
         data.message || "Login failed. Please check your credentials.",
       );
     }
 
     // Store token and user data in localStorage
-    if (data.token) {
-      localStorage.setItem("token", data.token);
+    if (data.access_token) {
+      localStorage.setItem("token", data.access_token);
     }
 
-    if (data.user) {
-      localStorage.setItem("user", JSON.stringify(data.user));
-    }
+    // Store user data (excluding token fields)
+    const userData = { ...data };
+    delete userData.access_token;
+    delete userData.token_type;
+    delete userData.expires_in;
+
+    localStorage.setItem("user", JSON.stringify(userData));
 
     return data;
   } catch (error) {
@@ -64,6 +68,7 @@ export const login = async (email, password, isGoogleLogin = false) => {
 export const register = async (userData) => {
   try {
     const response = await fetch(`${API_BASE_URL}/auth/login`, {
+      // Using login endpoint for signup as specified
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -73,13 +78,14 @@ export const register = async (userData) => {
         password: userData.password,
         first_name: userData.firstName,
         last_name: userData.lastName,
-        mobile_number: userData.mobileNumber,
-        company: userData.company,
+        mobile_number: userData.mobileNumber || "",
+        company: userData.company || "",
         is_google_login: userData.isGoogleLogin || false,
       }),
     });
 
     const data = await response.json();
+    console.log("Signup response:", data);
 
     // Handle HTTP errors
     if (!response.ok) {
@@ -88,11 +94,15 @@ export const register = async (userData) => {
       );
     }
 
-    // Check if registration was successful
-    if (!data.success) {
+    // Check if registration was successful - this specific message is actually a success
+    if (
+      !data.access_token &&
+      !data.message?.includes("Registration successful")
+    ) {
       throw new Error(data.message || "Registration failed. Please try again.");
     }
 
+    // If we got a success message about verifying email, we should still return successfully
     return data;
   } catch (error) {
     console.error("Registration error:", error);
@@ -142,7 +152,7 @@ export const updatePassword = async (passwordData) => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("token")}`, // Include auth token if required
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
       body: JSON.stringify(passwordData),
     });
@@ -190,6 +200,37 @@ export const contactUs = async (contactData) => {
     return data;
   } catch (error) {
     console.error("Contact form error:", error);
+    throw error;
+  }
+};
+
+/**
+ * Join waitlist
+ * @param {Object} waitlistData - Waitlist data (email, first_name, last_name)
+ * @returns {Promise} - Resolves with response data or rejects with error
+ */
+export const joinWaitlist = async (waitlistData) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/auth/waitlist`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(waitlistData),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        data.message ||
+          `Waitlist submission failed with status: ${response.status}`,
+      );
+    }
+
+    return data;
+  } catch (error) {
+    console.error("Waitlist error:", error);
     throw error;
   }
 };

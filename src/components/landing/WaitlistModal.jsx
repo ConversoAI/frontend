@@ -29,7 +29,7 @@ function WaitlistModal() {
     setResponseMessage("");
 
     try {
-      // Make actual API call to the waitlist endpoint
+      // Make API call to the waitlist endpoint
       const response = await fetch(
         "https://dev.app.conversoaistudio.com/api/auth/waitlist",
         {
@@ -42,7 +42,7 @@ function WaitlistModal() {
       );
 
       const responseData = await response.json();
-      console.log("Waitlist API response:", responseData);
+      // console.log("Waitlist API response:", responseData);
 
       if (!response.ok) {
         throw new Error(responseData.message || `Error: ${response.status}`);

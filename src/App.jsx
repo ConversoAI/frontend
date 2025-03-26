@@ -5,6 +5,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "./pages/landing/Home";
 import Contact from "./pages/landing/Contact";
 import Login from "./pages/landing/Login";
+import Signup from "./pages/landing/Signup";
 import ForgotPassword from "./pages/landing/ForgotPassword";
 import NotFound from "./pages/landing/NotFound";
 import Terms from "./pages/landing/Terms";
@@ -35,6 +36,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/terms" element={<Terms />} />
           <Route path="/privacy" element={<Privacy />} />
