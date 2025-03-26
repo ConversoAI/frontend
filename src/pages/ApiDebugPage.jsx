@@ -29,7 +29,7 @@ export default function ApiDebugPage() {
       name: "Login",
       url: "https://dev.app.conversoaistudio.com/api/auth/login",
       payload: {
-        email: "test@example.com",
+        email: "saifkhan914533@gmail.com",
         password: "Test@123",
         is_google_login: false,
       },
