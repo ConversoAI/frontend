@@ -202,27 +202,8 @@ export default function ApiDebug() {
               </div>
             </div>
           )}
-
-          <div className="mt-6">
-            <h2 className="text-lg font-medium mb-2">Console Output</h2>
-            <p className="text-sm text-gray-600 mb-2">
-              Open your browser's developer console (F12 or right-click →
-              Inspect → Console) to see detailed logs.
-            </p>
-            <div className="bg-gray-800 text-gray-200 p-4 rounded-md font-mono text-sm">
-              <p>
-                // Console output will appear in your browser's developer tools
-              </p>
-              <p>// The page is logging:</p>
-              <p>// - API endpoint being called</p>
-              <p>// - Raw text response</p>
-              <p>// - Parsed JSON response (or error)</p>
-              <p>// - Any errors encountered</p>
-            </div>
-          </div>
         </div>
       </main>
-
       <Footer />
     </div>
   );
